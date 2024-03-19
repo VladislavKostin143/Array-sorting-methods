@@ -2,57 +2,129 @@
 //
 
 #include <iostream>
+#include <vector>
 
-class MyMatrix 
+using namespace std;
+
+class MyMatrix
 {
-private: 
-    int rows,columns;
+private:
+    int rows, columns;
     int* array;
-public: 
+public:
     MyMatrix();
     MyMatrix(int, int);
     int NumRows();
     int NumColumns();
-    void SetElement(int, int,int);
+    void SetElement(int, int, int);
+    int* GetElement(int, int);
     void Print();
     void PrintElement(int, int);
+    vector<int*>* GetRow(int);
+    vector<int*>* GetColumn(int);
+
+    bool ValidIndex(int, int);
 };
-MyMatrix::MyMatrix() :MyMatrix(2,2) { std::cout << "Конструктор по умолчанию\n"; };
-MyMatrix::MyMatrix(int i, int j) 
-    { columns = i, rows = j; 
-      array = (int*)malloc(sizeof(int) * i * j); 
-    };
-void MyMatrix::SetElement(int i, int j, int value) 
-    { if ((i < rows) && (j < columns)) 
-        { *(array+i* columns +j) = value; }
-     else 
-        { std::cout << "Ошибка записи элемента.\n"; } 
-    };
-void MyMatrix::PrintElement(int i, int j)
+bool MyMatrix::ValidIndex(int i, int j) //проверяет допустимые индексы от 1 до rows или columns
 {
-    if ((i < rows) && (j < columns))
+    if ((i > 0 && i <= rows) && (j > 0 && j <= columns))
     {
-        std::cout << "["<<i<<","<<j<<"]="<<*(array+i*columns+j) << " ";
+        return true;
     }
     else
     {
-        std::cout << "Ошибка печати элемента."<< i<< " " << j << "\n";
+        return false;
+    };
+};
+
+MyMatrix::MyMatrix() :MyMatrix(2, 2) { cout << "Конструктор по умолчанию\n"; };
+
+MyMatrix::MyMatrix(int i, int j)
+{
+    rows = i, columns = j;
+    array = (int*)malloc(sizeof(int) * i * j);
+};
+void MyMatrix::SetElement(int i, int j, int value)
+{
+    if (ValidIndex(i, j))
+    {
+        *(array + (i - 1) * columns + j - 1) = value;
     }
+    else
+    {
+        cout << "Ошибка записи элемента (" << i << "," << j << ")\n";
+    }
+};
+void MyMatrix::PrintElement(int i, int j)
+{
+    if (ValidIndex(i, j))
+    {
+        //std::cout << "["<<i<<","<<j<<"]="<<*(array+i*columns+j) << " ";
+        cout << *(array + (i - 1) * columns + j - 1);
+    }
+    else
+    {
+        cout << "Ошибка печати элемента." << i << " " << j << "\n";
+    }
+};
+
+int* MyMatrix::GetElement(int i, int j)
+{
+    if (ValidIndex(i, j))
+    {
+        return (array + (i - 1) * columns + j - 1);
+    }
+    else
+    {
+        return array;//возвращаем первый элемент
+    }
+};
+vector<int*>* MyMatrix::GetRow(int ipar)
+{
+    if (ipar > 0 && ipar <= rows)
+    {
+        vector<int*>* result = new vector<int*>{};
+        for (int j = 1; j <= NumColumns(); j++)
+        {
+            result->push_back(GetElement(ipar, j));
+        }
+        return result;
+    }
+    else { cout << "Ошибка получения строки " << ipar << "\n"; return nullptr; }
+};
+
+vector<int*>* MyMatrix::GetColumn(int jpar)
+{
+    if (jpar > 0 && jpar <= columns)
+    {
+        vector<int*>* result = new vector<int*>{};
+        for (int i = 1; i <= NumRows(); i++)
+        {
+            result->push_back(GetElement(i, jpar));
+        }
+        return result;
+    }
+    else { cout << "Ошибка получения колонки " << jpar << "\n"; return nullptr; }
 };
 
 
 void MyMatrix::Print()
 {
-    for (int i = 0; i < NumRows(); i++)
+    cout << "\n\t ";
+    for (int j = 1; j <= NumColumns(); j++)
     {
-        std::cout << "i="<< i <<" ";
-        for (int j = 0; j <NumColumns(); j++)
+        cout << j << "\t ";
+    }
+    cout << "\n";
+    for (int i = 1; i <= NumRows(); i++)
+    {
+        cout << i << "\t ";
+        for (int j = 1; j <= NumColumns(); j++)
         {
-            std::cout << "j=" << j << "  ";
             PrintElement(i, j);
-            std::cout << "\t";
+            cout << "\t";
         }
-        std::cout << "\n";
+        cout << "\n";
     }
 };
 
@@ -63,18 +135,31 @@ int MyMatrix::NumColumns() { return columns; };
 int main()
 {
     setlocale(LC_ALL, "RU");
-    std::cout << "____________________________________\n";
-    MyMatrix M(3,4);
-    for (int i = 0; i < M.NumRows(); i++) 
+    cout << "____________________________________\n";
+    MyMatrix M(8, 9);
+    for (int i = 1; i <= M.NumRows(); i++)
+    {
+        for (int j = 1; j <= M.NumColumns(); j++)
         {
-        for (int j = 0; j < M.NumColumns(); j++)
-            { M.SetElement(i, j, rand()); }
-
+            M.SetElement(i, j, rand());
         }
 
-    
-
+    }
     M.Print();
+
+    cout << "\n2 строка\t";
+    vector<int*>* second_row = M.GetRow(2);
+    vector<int*>* second_column = M.GetColumn(2);
+    for (int* i : *second_row)
+    {
+        cout << *i << "\t";
+    }
+
+    cout << "\n2 колонка\t";
+    for (int* j : *second_column)
+    {
+        cout << *j << "\t";
+    }
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

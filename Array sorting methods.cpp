@@ -68,12 +68,8 @@ int main()
     for (int i = 0; i < M.NumRows(); i++) 
         {
         for (int j = 0; j < M.NumColumns(); j++)
-            {
-            M.SetElement(i, j, rand());
-            M.PrintElement(i, j);
-            std::cout << "\t";
-            }
-        std::cout << "\n";
+            { M.SetElement(i, j, rand()); }
+
         }
 
     

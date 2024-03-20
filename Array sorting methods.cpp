@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 
@@ -135,21 +136,33 @@ class ISort
 {
 public:
 
-    ISort() = default;
+    ISort() {title="не задан";duration=0;comparisions=0;replacements=0; };
     ~ISort() = default;
-    virtual sort(vector<int*>*) {};
-    run(vector<int*>*);
-    print();
-private:
+    virtual void sort(vector<int*>*) {};
+    void run(vector<int*>*);
+    void print();
+protected:
     string title;
-    int time;
+private:
+    int duration;
     int comparisions;
     int replacements;
 };
 
-ISort::print() { cout << "Метод " << title << " вренмя " << time << " сек сравнений " << comparisions << " замен " << replacements << "\n"; };
-ISort::run(vector<int*>* V) { sort(V); print(); };
+void ISort::print() { cout << "Метод " << title << " вренмя " << duration << " сек сравнений " << comparisions << " замен " << replacements << "\n"; };
+void ISort::run(vector<int*>* V) 
+{   int starttime = time(NULL);
+    sort(V); 
+    duration = time(NULL) - starttime;
+    print(); 
+    };
 
+class SimpleSort :ISort 
+{public:
+    SimpleSort() :ISort() { title = "простая сортировка"; };
+    ~SimpleSort() {};
+    void sort(vector<int*>*) { cout << "сортируем"; };
+};
 
 int main()
 {
@@ -179,6 +192,10 @@ int main()
     {
         cout << *j << "\t";
     }
+
+    SimpleSort *S1=new SimpleSort();
+    S1->run(second_row);
+    S1->
 
     cout << "\nРабота завершена\n";
 }

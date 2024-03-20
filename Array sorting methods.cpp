@@ -151,13 +151,13 @@ private:
 
 void ISort::print() { cout << "Метод " << title << " вренмя " << duration << " сек сравнений " << comparisions << " замен " << replacements << "\n"; };
 void ISort::run(vector<int*>* V) 
-{   int starttime = time(NULL);
+{   int starttime = (int)time(NULL);
     sort(V); 
-    duration = time(NULL) - starttime;
+    duration = (int)time(NULL) - starttime;
     print(); 
     };
 
-class SimpleSort :ISort 
+class SimpleSort :public ISort 
 {public:
     SimpleSort() :ISort() { title = "простая сортировка"; };
     ~SimpleSort() {};
@@ -195,7 +195,7 @@ int main()
 
     SimpleSort *S1=new SimpleSort();
     S1->run(second_row);
-    S1->
+    
 
     cout << "\nРабота завершена\n";
 }

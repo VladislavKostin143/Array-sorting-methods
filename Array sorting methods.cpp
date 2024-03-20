@@ -137,11 +137,18 @@ public:
 
     ISort() = default;
     ~ISort() = default;
+    virtual sort(vector<int*>*) {};
+    run(vector<int*>*);
+    print();
 private:
+    string title;
     int time;
     int comparisions;
     int replacements;
 };
+
+ISort::print() { cout << "Метод " << title << " вренмя " << time << " сек сравнений " << comparisions << " замен " << replacements << "\n"; };
+ISort::run(vector<int*>* V) { sort(V); print(); };
 
 
 int main()

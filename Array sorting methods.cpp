@@ -131,6 +131,18 @@ void MyMatrix::Print()
 int MyMatrix::NumRows() { return rows; };
 int MyMatrix::NumColumns() { return columns; };
 
+class ISort
+{
+public:
+
+    ISort() = default;
+    ~ISort() = default;
+private:
+    int time;
+    int comparisions;
+    int replacements;
+};
+
 
 int main()
 {

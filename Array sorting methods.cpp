@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
+#include <chrono>
 
 using namespace std;
 
@@ -149,11 +150,13 @@ private:
     int replacements;
 };
 
-void ISort::print() { cout << "Метод " << title << " вренмя " << duration << " сек сравнений " << comparisions << " замен " << replacements << "\n"; };
+void ISort::print() { cout << "Метод " << title << ", время " << duration << " наносек, сравнений " << comparisions << ", замен " << replacements << "\n"; };
 void ISort::run(vector<int*>* V) 
-{   int starttime = (int)time(NULL);
+{
+    auto start = std::chrono::system_clock::now();
     sort(V); 
-    duration = (int)time(NULL) - starttime;
+    auto end = std::chrono::system_clock::now();
+    duration = (int)chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
     print(); 
     };
 
@@ -161,8 +164,16 @@ class SimpleSort :public ISort
 {public:
     SimpleSort() :ISort() { title = "простая сортировка"; };
     ~SimpleSort() {};
-    void sort(vector<int*>*) { cout << "сортируем"; };
+    void sort(vector<int*>*);
 };
+
+void SimpleSort::sort(vector<int*>*V) 
+    { cout << "\nсортируем\n"; 
+    for (int* i : *V) 
+    {
+        cout << *i<<"\n";
+    }
+    };
 
 int main()
 {

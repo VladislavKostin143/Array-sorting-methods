@@ -175,6 +175,7 @@ void SimpleSort::sort(vector<int*>*V)
     }
     };
 
+
 int main()
 {
     setlocale(LC_ALL, "RU");

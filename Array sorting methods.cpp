@@ -152,14 +152,14 @@ protected:
     int elements;
 };
 
-void ISort::print() { cout << "Метод " << title << ", элементов " << elements << ", время " << duration << " наносек, сравнений " << comparisions << ", замен " << replacements << "\n"; };
+void ISort::print() { cout << "Метод " << title << ", элементов " << elements << ", время " << duration << " миллисекунд, сравнений " << comparisions << ", замен " << replacements << "\n"; };
 void ISort::clear() { elements = 0; duration = 0; comparisions = 0; replacements = 0; };
 void ISort::run(vector<int*>* V) 
 {
     auto start = std::chrono::system_clock::now();
     sort(V); 
     auto end = std::chrono::system_clock::now();
-    duration = (int)chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+    duration = (int)chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     print(); 
     };
 void ISort::print_vector(vector<int*>* V)

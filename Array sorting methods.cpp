@@ -152,17 +152,17 @@ protected:
     int elements;
 };
 
-void ISort::print() { cout << "Элементов " << elements << ", время " << duration << " миллисекунд, сравнений " << comparisions << ", замен " << replacements << "\n"; };
+void ISort::print() { cout << "Элементов " << elements << ", время " << duration << " наносекунд, сравнений " << comparisions << ", замен " << replacements << "\n"; };
 void ISort::clear() { elements = 0; duration = 0; comparisions = 0; replacements = 0; };
 void ISort::run(vector<int*>* V) 
 {
+    cout << "\n" << title << "\n";
     cout << "Исходный вектор:\n";
     print_vector(V);
-    cout << "Метод сортировки: "<<title<<"\n";
     auto start = std::chrono::system_clock::now();
     sort(V); 
     auto end = std::chrono::system_clock::now();
-    duration = (int)chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    duration = (int)chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
     cout << "Сотрированный вектор:\n";
     print_vector(V);
     print(); 
@@ -270,7 +270,7 @@ void InsertionSort::sort(vector<int*>* V)
 class ShellSort :public ISort
 {
 public:
-    ShellSort() :ISort() { title = "Сортировка вставкой"; };
+    ShellSort() :ISort() { title = "Метод Шелла"; };
     ~ShellSort() {};
     void sort(vector<int*>*);
 };
@@ -289,11 +289,13 @@ void ShellSort::sort(vector<int*>* V)
             tmp = (*V)[i];
             for (j = i; j >= step; j -= step)
             {
+                comparisions++;
                 if (*tmp < *((*V)[j-step]))
                     (*V)[j] = (*V)[j - step];
                 else
                     break;
             }
+            replacements++;
             (*V)[j] = tmp;
         }
 };
@@ -314,19 +316,9 @@ int main()
     }
     M.Print();
 
-    cout << "\n2 строка\t";
+    
     vector<int*>* second_row = M.GetRow(2);
     vector<int*>* second_column = M.GetColumn(2);
-    for (int* i : *second_row)
-    {
-        cout << *i << "\t";
-    }
-
-    cout << "\n2 колонка\t";
-    for (int* j : *second_column)
-    {
-        cout << *j << "\t";
-    }
 
     BubbleSort*S1=new BubbleSort();
     SelectionSort* S2 = new SelectionSort();

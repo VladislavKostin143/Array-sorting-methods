@@ -152,15 +152,21 @@ protected:
     int elements;
 };
 
-void ISort::print() { cout << "Метод " << title << ", элементов " << elements << ", время " << duration << " миллисекунд, сравнений " << comparisions << ", замен " << replacements << "\n"; };
+void ISort::print() { cout << "Элементов " << elements << ", время " << duration << " миллисекунд, сравнений " << comparisions << ", замен " << replacements << "\n"; };
 void ISort::clear() { elements = 0; duration = 0; comparisions = 0; replacements = 0; };
 void ISort::run(vector<int*>* V) 
 {
+    cout << "Исходный вектор:\n";
+    print_vector(V);
+    cout << "Метод сортировки: "<<title<<"\n";
     auto start = std::chrono::system_clock::now();
     sort(V); 
     auto end = std::chrono::system_clock::now();
     duration = (int)chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    cout << "Сотрированный вектор:\n";
+    print_vector(V);
     print(); 
+
     };
 void ISort::print_vector(vector<int*>* V)
 {   for (int* i : *V)   { cout << *i << " "; }
@@ -178,19 +184,12 @@ class BubbleSort :public ISort
 void BubbleSort::sort(vector<int*>*V)
 {
     clear();
-    cout << "\nсортируем пузырьком\n"; 
-    cout << "\nисходный\n";
-    print_vector(V);
-
     elements = V->size();
     unsigned iterations = elements - 1;
     while (iterations > 0)
     {
-        //cout << " iterations=" << iterations << "\n";
     for (unsigned i = 0; i < iterations; i++)
     {
-        //cout << "   i=" << i << "\n";
-        //cout << " До перестановки *((*V)[i])=" << *((*V)[i]) << " *((*V)[i + 1])=" << *((*V)[i + 1]) << "\n";
         int* PCurrentValue = (*V)[i]; //текущией элемент
         int* PNextValue = (*V)[i + 1];//следующий элемент
         comparisions++;
@@ -200,16 +199,11 @@ void BubbleSort::sort(vector<int*>*V)
             int* temp = PNextValue;
             (*V)[i + 1] = PCurrentValue;
             (*V)[i] = temp;
-
-            //cout << "    После перестановки *((*V)[i])=" << *((*V)[i]) << " *((*V)[i + 1])=" << *((*V)[i + 1]) << "\n";
-
         }
     }
     iterations--;
     }
-    cout << "\nрезультат\n";
-    print_vector(V);
-    };
+};
 
 
 class SelectionSort :public ISort
@@ -223,44 +217,30 @@ public:
 void SelectionSort::sort(vector<int*>* V)
 {
     clear();
-    cout << "\nсортируем отбором\n";
-    cout << "\nисходный\n";
-    print_vector(V);
     elements = (unsigned)V->size();
-    unsigned iterations = elements;
-    unsigned start = 0;
-    
+    unsigned iterations = elements,start = 0;
     while (iterations > 0)
     {
-        //cout << " iterations=" << iterations << "\n";
         int* PMinValue = (*V)[start]; //минимальный элемент    
         unsigned MinIndex = start;
         for (unsigned i = start; i < (unsigned)elements; i++)
         {
-            //cout << "   i=" << i << "\n";
-            
             int* PCurrentValue = (*V)[i]; //текущией элемент
-            //cout << " До перестановки *PCurrentValue=" << *PCurrentValue << " *PMinValue=" << *PMinValue << "\n";
             comparisions++;
             if (*PCurrentValue <  *PMinValue)
                 {
                 PMinValue = PCurrentValue;
                 MinIndex = i;
-                //cout << "   После сравнения MinIndex = " << MinIndex << " *PMinValue=" << *PMinValue << "\n";
             }
             
         }
         int* temp = (*V)[start];
         (*V)[start] = PMinValue;
         (*V)[MinIndex] = temp;
-        //cout << "   Замена\n";
         replacements++;
         start++;
         iterations--;
     }
-    cout << "\nрезультат\n";
-    print_vector(V);
-    cout << "\n";
 };
 
 
@@ -275,11 +255,7 @@ public:
 void InsertionSort::sort(vector<int*>* V)
 {
     clear();
-    cout << "\nсортируем вставкой\n";
-    cout << "\nисходный\n";
-    print_vector(V);
     elements = V->size();
-
     for (int i = 1; i < elements; i++)
         {
         for (int j = i; j > 0 && *((*V)[j - 1]) > *((*V)[j]); j--) // пока j>0 и элемент j-1 > j, x-массив int
@@ -289,17 +265,38 @@ void InsertionSort::sort(vector<int*>* V)
                 comparisions++;
             }
         }
-
-
-
-
-
-    
-    cout << "\nрезультат\n";
-    print_vector(V);
-    cout << "\n";
 };
 
+class ShellSort :public ISort
+{
+public:
+    ShellSort() :ISort() { title = "Сортировка вставкой"; };
+    ~ShellSort() {};
+    void sort(vector<int*>*);
+};
+
+void ShellSort::sort(vector<int*>* V)
+{
+    clear();
+    elements = V->size();
+
+
+    int i, j, step;
+    int *tmp;
+    for (step = elements / 2; step > 0; step /= 2)
+        for (i = step; i < elements; i++)
+        {
+            tmp = (*V)[i];
+            for (j = i; j >= step; j -= step)
+            {
+                if (*tmp < *((*V)[j-step]))
+                    (*V)[j] = (*V)[j - step];
+                else
+                    break;
+            }
+            (*V)[j] = tmp;
+        }
+};
 
 
 int main()
@@ -334,8 +331,9 @@ int main()
     BubbleSort*S1=new BubbleSort();
     SelectionSort* S2 = new SelectionSort();
     InsertionSort* S3 = new InsertionSort();
-    S3->run(second_row);
-    S3->run(second_column);
+    ShellSort* S4 = new ShellSort();
+    S4->run(second_row);
+    S4->run(second_column);
     
 
     cout << "\nРабота завершена\n";

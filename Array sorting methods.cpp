@@ -300,6 +300,47 @@ void ShellSort::sort(vector<int*>* V)
         }
 };
 
+class QuickSort :public ISort
+{
+public:
+    QuickSort() :ISort() { title = "Быстрая сортировка"; };
+    ~QuickSort() {};
+    void sort(vector<int*>*);
+    void QSort(vector<int*>*,int,int);
+};
+
+void QuickSort::QSort(vector<int*>* V, int left, int right)
+    {
+        if (right <= left)
+            return;
+        int ipi = left + (right - left)/2;
+        swap((*V)[ipi], (*V)[right]);
+        replacements++;
+        int x = *((*V)[right]);
+        int m = left;
+        for (int i = left; i < right; i++)
+            {
+            comparisions++;
+            if (*((*V)[i]) <= x) 
+                {
+                swap((*V)[i], (*V)[m++]);
+                replacements++;
+                }
+            }
+        swap((*V)[m], (*V)[right]);
+        QSort(V, left, m);
+        QSort(V, m + 1, right);
+    }
+
+
+void QuickSort::sort(vector<int*>* V)
+{
+    clear();
+    elements = V->size();
+    QSort(V, 0, elements-1);
+};
+
+
 
 int main()
 {
@@ -324,8 +365,9 @@ int main()
     SelectionSort* S2 = new SelectionSort();
     InsertionSort* S3 = new InsertionSort();
     ShellSort* S4 = new ShellSort();
-    S4->run(second_row);
-    S4->run(second_column);
+    QuickSort* S5 = new QuickSort();
+    S5->run(second_row);
+    S5->run(second_column);
     
 
     cout << "\nРабота завершена\n";

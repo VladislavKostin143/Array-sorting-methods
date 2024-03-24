@@ -156,6 +156,8 @@ void ISort::print() { cout << "Элементов " << elements << ", время
 void ISort::clear() { elements = 0; duration = 0; comparisions = 0; replacements = 0; };
 void ISort::run(vector<int*>* V) 
 {
+    clear();
+    elements = V->size();
     cout << "\n" << title << "\n";
     cout << "Исходный вектор:\n";
     print_vector(V);
@@ -183,8 +185,6 @@ class BubbleSort :public ISort
 
 void BubbleSort::sort(vector<int*>*V)
 {
-    clear();
-    elements = V->size();
     unsigned iterations = elements - 1;
     while (iterations > 0)
     {
@@ -216,8 +216,6 @@ public:
 
 void SelectionSort::sort(vector<int*>* V)
 {
-    clear();
-    elements = (unsigned)V->size();
     unsigned iterations = elements,start = 0;
     while (iterations > 0)
     {
@@ -254,8 +252,6 @@ public:
 
 void InsertionSort::sort(vector<int*>* V)
 {
-    clear();
-    elements = V->size();
     for (int i = 1; i < elements; i++)
         {
         for (int j = i; j > 0 && *((*V)[j - 1]) > *((*V)[j]); j--) // пока j>0 и элемент j-1 > j, x-массив int
@@ -277,12 +273,7 @@ public:
 
 void ShellSort::sort(vector<int*>* V)
 {
-    clear();
-    elements = V->size();
-
-
-    int i, j, step;
-    int *tmp;
+    int i, j, step,*tmp;
     for (step = elements / 2; step > 0; step /= 2)
         for (i = step; i < elements; i++)
         {
@@ -335,8 +326,6 @@ void QuickSort::QSort(vector<int*>* V, int left, int right)
 
 void QuickSort::sort(vector<int*>* V)
 {
-    clear();
-    elements = V->size();
     QSort(V, 0, elements-1);
 };
 
@@ -358,16 +347,24 @@ int main()
     M.Print();
 
     
-    vector<int*>* second_row = M.GetRow(2);
-    vector<int*>* second_column = M.GetColumn(2);
+    vector<int*>* row1 = M.GetRow(1);
+    vector<int*>* row2 = M.GetRow(2);
+    vector<int*>* row3 = M.GetRow(3);
+    vector<int*>* row4 = M.GetRow(4);
+    vector<int*>* row5 = M.GetRow(5);
+
+    
 
     BubbleSort*S1=new BubbleSort();
     SelectionSort* S2 = new SelectionSort();
     InsertionSort* S3 = new InsertionSort();
     ShellSort* S4 = new ShellSort();
     QuickSort* S5 = new QuickSort();
-    S5->run(second_row);
-    S5->run(second_column);
+    S1->run(row1);
+    S2->run(row2);
+    S3->run(row3);
+    S4->run(row4);
+    S5->run(row5);
     
 
     cout << "\nРабота завершена\n";

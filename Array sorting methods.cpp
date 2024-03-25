@@ -22,9 +22,11 @@ public:
     void RandomFill();
     void SetElement(int, int, int);
     int* GetElement(int, int);
+    int*& GetElementAdress(int, int);
     void Print();
     void PrintElement(int, int);
     vector<int*>* GetRow(int);
+    vector<int*>*& GetAdressesRow(int);
     vector<int*>* GetColumn(int);
 
     bool ValidIndex(int, int);
@@ -102,6 +104,19 @@ int* MyMatrix::GetElement(int i, int j)
         return array;//возвращаем первый элемент
     }
 };
+
+int*& MyMatrix::GetElementAdress(int i, int j)
+{
+    if (ValidIndex(i, j))
+    {
+        return &(array + (i - 1) * columns + j - 1);
+    }
+    else
+    {
+        return array;//возвращаем первый элемент
+    }
+};
+
 vector<int*>* MyMatrix::GetRow(int ipar)
 {
     if (ipar > 0 && ipar <= rows)
@@ -110,6 +125,20 @@ vector<int*>* MyMatrix::GetRow(int ipar)
         for (int j = 1; j <= NumColumns(); j++)
         {
             result->push_back(GetElement(ipar, j));
+        }
+        return result;
+    }
+    else { cout << "Ошибка получения строки " << ipar << "\n"; return nullptr; }
+};
+
+vector<int*>* MyMatrix::GetAdressesRow(int ipar)
+{
+    if (ipar > 0 && ipar <= rows)
+    {
+        vector<int*&>* result = new vector<int*&>{};
+        for (int j = 1; j <= NumColumns(); j++)
+        {
+            result->push_back(GetElementAdress(ipar, j));
         }
         return result;
     }
@@ -351,6 +380,13 @@ void QuickSort::sort(vector<int*>* V)
 };
 
 
+void copy_to_matrix(vector<int*>* From, vector<int&*>* To)
+{
+    for (int* i : From) 
+        {
+        To[i] = From[i];
+        }
+};
 
 
 int main()
@@ -364,6 +400,8 @@ int main()
     Mcopy.Print();
     
     vector<int*>* row1 = Mcopy.GetRow(1);
+    vector<int&*>* arow1 = Mcopy.GetAdressesRow(1);
+
     vector<int*>* row2 = Mcopy.GetRow(2);
     vector<int*>* row3 = Mcopy.GetRow(3);
     vector<int*>* row4 = Mcopy.GetRow(4);

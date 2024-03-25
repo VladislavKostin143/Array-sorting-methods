@@ -8,6 +8,12 @@
 
 using namespace std;
 
+void print_vector(vector<int*>* V)
+{
+    for (int* i : *V) { cout << *i << " "; }
+    cout << "\n";
+};
+
 class MyMatrix
 {
 private:
@@ -21,12 +27,13 @@ public:
     int NumColumns();
     void RandomFill();
     void SetElement(int, int, int);
+    void SetElement(int, int, int *);
     int* GetElement(int, int);
-    int*& GetElementAdress(int, int);
+    
     void Print();
     void PrintElement(int, int);
     vector<int*>* GetRow(int);
-    vector<int*>*& GetAdressesRow(int);
+    void CopyRow(int, vector<int*>*);
     vector<int*>* GetColumn(int);
 
     bool ValidIndex(int, int);
@@ -80,6 +87,18 @@ void MyMatrix::SetElement(int i, int j, int value)
         cout << "Ошибка записи элемента (" << i << "," << j << ")\n";
     }
 };
+
+void MyMatrix::SetElement(int i, int j, int *value)
+{
+    if (ValidIndex(i, j))
+    {
+        *(array + (i - 1) * columns + j - 1) = *value;
+    }
+    else
+    {
+        cout << "Ошибка записи элемента (" << i << "," << j << ")\n";
+    }
+};
 void MyMatrix::PrintElement(int i, int j)
 {
     if (ValidIndex(i, j))
@@ -105,17 +124,7 @@ int* MyMatrix::GetElement(int i, int j)
     }
 };
 
-int*& MyMatrix::GetElementAdress(int i, int j)
-{
-    if (ValidIndex(i, j))
-    {
-        return &(array + (i - 1) * columns + j - 1);
-    }
-    else
-    {
-        return array;//возвращаем первый элемент
-    }
-};
+
 
 vector<int*>* MyMatrix::GetRow(int ipar)
 {
@@ -131,19 +140,20 @@ vector<int*>* MyMatrix::GetRow(int ipar)
     else { cout << "Ошибка получения строки " << ipar << "\n"; return nullptr; }
 };
 
-vector<int*>* MyMatrix::GetAdressesRow(int ipar)
-{
-    if (ipar > 0 && ipar <= rows)
+
+void MyMatrix::CopyRow(int ipar, vector<int*> *V)
+{   
+    cout << "копирование строки "<<ipar<<"\n";
+    print_vector(V);
+    int j = 0;
+    for (int* i : *V) 
     {
-        vector<int*&>* result = new vector<int*&>{};
-        for (int j = 1; j <= NumColumns(); j++)
-        {
-            result->push_back(GetElementAdress(ipar, j));
-        }
-        return result;
+        SetElement(ipar, j + 1, i);
+        //SetElement(ipar, j + 1, j);
+        j++;
     }
-    else { cout << "Ошибка получения строки " << ipar << "\n"; return nullptr; }
 };
+
 
 vector<int*>* MyMatrix::GetColumn(int jpar)
 {
@@ -193,7 +203,7 @@ public:
     void run(vector<int*>*);
     void print();
     void clear();
-    void print_vector(vector<int*>*);
+    //void print_vector(vector<int*>*);
 protected:
     string title;
     int duration;
@@ -201,6 +211,8 @@ protected:
     int replacements;
     int elements;
 };
+
+
 
 void ISort::print() { cout << "Элементов " << elements << ", время " << duration << " наносекунд, сравнений " << comparisions << ", замен " << replacements << "\n"; };
 void ISort::clear() { elements = 0; duration = 0; comparisions = 0; replacements = 0; };
@@ -220,10 +232,6 @@ void ISort::run(vector<int*>* V)
     print(); 
 
     };
-void ISort::print_vector(vector<int*>* V)
-{   for (int* i : *V)   { cout << *i << " "; }
-    cout << "\n";
-};
 
 
 class BubbleSort :public ISort
@@ -380,14 +388,6 @@ void QuickSort::sort(vector<int*>* V)
 };
 
 
-void copy_to_matrix(vector<int*>* From, vector<int&*>* To)
-{
-    for (int* i : From) 
-        {
-        To[i] = From[i];
-        }
-};
-
 
 int main()
 {
@@ -400,8 +400,6 @@ int main()
     Mcopy.Print();
     
     vector<int*>* row1 = Mcopy.GetRow(1);
-    vector<int&*>* arow1 = Mcopy.GetAdressesRow(1);
-
     vector<int*>* row2 = Mcopy.GetRow(2);
     vector<int*>* row3 = Mcopy.GetRow(3);
     vector<int*>* row4 = Mcopy.GetRow(4);
@@ -415,11 +413,15 @@ int main()
     ShellSort* S4 = new ShellSort();
     QuickSort* S5 = new QuickSort();
     S1->run(row1);
+    Mcopy.CopyRow(1, row1);
     S2->run(row2);
+    //Mcopy.CopyRow(2, row2);
     S3->run(row3);
+    //Mcopy.CopyRow(3, row3);
     S4->run(row4);
+    //Mcopy.CopyRow(4, row4);
     S5->run(row5);
-    
+    //Mcopy.CopyRow(5, row5);
     cout << "\nСортированная матрица\n";
     Mcopy.Print();
 

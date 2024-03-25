@@ -16,8 +16,10 @@ private:
 public:
     MyMatrix();
     MyMatrix(int, int);
+    MyMatrix(MyMatrix *);
     int NumRows();
     int NumColumns();
+    void RandomFill();
     void SetElement(int, int, int);
     int* GetElement(int, int);
     void Print();
@@ -46,6 +48,25 @@ MyMatrix::MyMatrix(int i, int j)
     rows = i, columns = j;
     array = (int*)malloc(sizeof(int) * i * j);
 };
+
+MyMatrix::MyMatrix(MyMatrix *M)
+{
+    rows = M->rows, columns = M->columns;
+    array = (int*)malloc(sizeof(int) * rows * columns);
+    for (int i = 0; i < rows * columns; i++)
+    {
+        array[i] = M->array[i];
+    }
+};
+
+void MyMatrix::RandomFill()
+{
+    for (int i = 0; i < rows * columns; i++)
+    {
+        *(array + i) = rand();
+    }
+};
+
 void MyMatrix::SetElement(int i, int j, int value)
 {
     if (ValidIndex(i, j))
@@ -331,27 +352,22 @@ void QuickSort::sort(vector<int*>* V)
 
 
 
+
 int main()
 {
     setlocale(LC_ALL, "RU");
     cout << "____________________________________\n";
     MyMatrix M(8, 9);
-    for (int i = 1; i <= M.NumRows(); i++)
-    {
-        for (int j = 1; j <= M.NumColumns(); j++)
-        {
-            M.SetElement(i, j, rand());
-        }
+    M.RandomFill();
+    MyMatrix Mcopy(&M);
 
-    }
-    M.Print();
-
+    Mcopy.Print();
     
-    vector<int*>* row1 = M.GetRow(1);
-    vector<int*>* row2 = M.GetRow(2);
-    vector<int*>* row3 = M.GetRow(3);
-    vector<int*>* row4 = M.GetRow(4);
-    vector<int*>* row5 = M.GetRow(5);
+    vector<int*>* row1 = Mcopy.GetRow(1);
+    vector<int*>* row2 = Mcopy.GetRow(2);
+    vector<int*>* row3 = Mcopy.GetRow(3);
+    vector<int*>* row4 = Mcopy.GetRow(4);
+    vector<int*>* row5 = Mcopy.GetRow(5);
 
     
 
@@ -366,6 +382,11 @@ int main()
     S4->run(row4);
     S5->run(row5);
     
+    cout << "\nСортированная матрица\n";
+    Mcopy.Print();
+
+    cout << "\nИсходная матрица\n";
+    M.Print();
 
     cout << "\nРабота завершена\n";
 }

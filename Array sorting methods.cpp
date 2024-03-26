@@ -50,21 +50,21 @@ bool MyMatrix::ValidIndex(int i, int j) //проверяет допустимы�
     };
 };
 
-MyMatrix::MyMatrix() :MyMatrix(2, 2) { cout << "Конструктор по умолчанию\n"; };
+MyMatrix::MyMatrix() : MyMatrix(2, 2) { cout << "Конструктор по умолчанию\n"; };
 
 MyMatrix::MyMatrix(int i, int j)
 {
     rows = i, columns = j;
-    array = (int*)malloc(sizeof(int) * i * j);
+    array = (int*)malloc(sizeof(int*) * i * j);//выделяем память под массив указателей на int
 };
 
-MyMatrix::MyMatrix(MyMatrix *M)
+MyMatrix::MyMatrix(MyMatrix *M) : MyMatrix(M->rows, M->columns)
 {
-    rows = M->rows, columns = M->columns;
-    array = (int*)malloc(sizeof(int) * rows * columns);
+    
     for (int i = 0; i < rows * columns; i++)
     {
-        array[i] = M->array[i];
+        array[i] = (int)malloc(sizeof(int));//выделяем память под новый int для каждого элемента нового массива, получаемого копированием
+        *(array+i)=M->array[i];
     }
 };
 
@@ -72,6 +72,7 @@ void MyMatrix::RandomFill()
 {
     for (int i = 0; i < rows * columns; i++)
     {
+        array[i] = (int)malloc(sizeof(int));//выделяем память под новый int для каждого элемента нового массива
         *(array + i) = rand();
     }
 };
@@ -80,6 +81,7 @@ void MyMatrix::SetElement(int i, int j, int value)
 {
     if (ValidIndex(i, j))
     {
+        array[(i - 1) * columns + j - 1] = (int)malloc(sizeof(int));//выделяем память под новый int для устанавливаемого элемента
         *(array + (i - 1) * columns + j - 1) = value;
     }
     else
@@ -88,29 +90,7 @@ void MyMatrix::SetElement(int i, int j, int value)
     }
 };
 
-void MyMatrix::SetElement(int i, int j, int *value)
-{
-    if (ValidIndex(i, j))
-    {
-        *(array + (i - 1) * columns + j - 1) = *value;
-    }
-    else
-    {
-        cout << "Ошибка записи элемента (" << i << "," << j << ")\n";
-    }
-};
-void MyMatrix::PrintElement(int i, int j)
-{
-    if (ValidIndex(i, j))
-    {
-        //std::cout << "["<<i<<","<<j<<"]="<<*(array+i*columns+j) << " ";
-        cout << *(array + (i - 1) * columns + j - 1);
-    }
-    else
-    {
-        cout << "Ошибка печати элемента." << i << " " << j << "\n";
-    }
-};
+void MyMatrix::SetElement(int i, int j, int *value) {SetElement(i,j,*value);};
 
 int* MyMatrix::GetElement(int i, int j)
 {
@@ -124,6 +104,12 @@ int* MyMatrix::GetElement(int i, int j)
     }
 };
 
+void MyMatrix::PrintElement(int i, int j)
+{
+    cout << *GetElement(i,j);
+};
+
+
 
 
 vector<int*>* MyMatrix::GetRow(int ipar)
@@ -133,7 +119,9 @@ vector<int*>* MyMatrix::GetRow(int ipar)
         vector<int*>* result = new vector<int*>{};
         for (int j = 1; j <= NumColumns(); j++)
         {
-            result->push_back(GetElement(ipar, j));
+            int *ptr = (int*)malloc(sizeof(int));
+            *ptr = *GetElement(ipar, j);
+            result->push_back(ptr);
         }
         return result;
     }

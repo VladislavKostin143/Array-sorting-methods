@@ -6,12 +6,6 @@
 
 using namespace std;
 
-void print_vector(vector<int*>* V)
-{
-    for (int* i : *V) { cout << *i << " "; }
-    cout << "\n";
-};
-
 int GetSortingValue(int value)
 {
     int result = 0, rest = value;
@@ -22,6 +16,14 @@ int GetSortingValue(int value)
     }
     return result;
 };
+
+void print_vector(vector<int*>* V)
+{
+    for (int* i : *V) { cout << *i << " ("<<GetSortingValue(*i)<<")"; }
+    cout << "\n";
+};
+
+
 
 class MyMatrix
 {

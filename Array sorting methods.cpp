@@ -15,33 +15,28 @@ int main()
     MyMatrix Mcopy(&M);
 
     Mcopy.Print();
-    
-    vector<int*>* row1 = Mcopy.GetRow(1);
-    vector<int*>* row2 = Mcopy.GetRow(2);
-    vector<int*>* row3 = Mcopy.GetRow(3);
-    vector<int*>* row4 = Mcopy.GetRow(4);
-    vector<int*>* row5 = Mcopy.GetRow(5);
 
     
-    vector<int*>* column2 = Mcopy.GetColumn(2);
-    vector<int*>* column4 = Mcopy.GetColumn(4);
-    vector<int*>* column6 = Mcopy.GetColumn(4);
-    vector<int*>* column8 = Mcopy.GetColumn(5);
 
+    vector<ISort*> Methods{};
 
-    BubbleSort*S1=new BubbleSort();
-    SelectionSort* S2 = new SelectionSort();
-    InsertionSort* S3 = new InsertionSort();
-    ShellSort* S4 = new ShellSort();
-    QuickSort* S5 = new QuickSort();
-    S1->run(column2);
-    Mcopy.CopyColumn(2, column2);
-    S2->run(column4);
-    Mcopy.CopyColumn(4, column4);
+    Methods.push_back(new BubbleSort());
+    Methods.push_back(new SelectionSort());
+    Methods.push_back(new InsertionSort());
+    Methods.push_back(new ShellSort());
+    Methods.push_back(new QuickSort());
+
+    for (ISort* method : Methods)
+    {
+        for (int j = 2; j <= Mcopy.NumColumns(); j += 2)
+        {
+            vector<int*>* column = Mcopy.GetColumn(j);
+            method->run(column);
+            Mcopy.CopyColumn(j, column);
+        }
+    }
+
     
-    cout << "\nСортированная матрица\n";
-    Mcopy.Print();
-
     cout << "\nИсходная матрица\n";
     M.Print();
 

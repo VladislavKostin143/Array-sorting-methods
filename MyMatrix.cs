@@ -160,8 +160,6 @@ vector<int*>* MyMatrix::GetColumn(int jpar)
 
 void MyMatrix::CopyRow(int ipar, vector<int*> * V)
 {
-    cout << "копирование строки " << ipar << "\n";
-    print_vector(V);
     int j = 0;
     for (int* i : *V)
     {
@@ -173,8 +171,6 @@ void MyMatrix::CopyRow(int ipar, vector<int*> * V)
 
 void MyMatrix::CopyColumn(int ipar, vector<int*> * V)
 {
-    cout << "копирование колонки " << ipar << "\n";
-    print_vector(V);
     int j = 0;
     for (int* i : *V)
     {

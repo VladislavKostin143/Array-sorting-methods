@@ -5,6 +5,7 @@
 #include <vector>
 #include <ctime>
 #include <chrono>
+#include <iomanip>
 
 using namespace std;
 
@@ -12,6 +13,17 @@ void print_vector(vector<int*>* V)
 {
     for (int* i : *V) { cout << *i << " "; }
     cout << "\n";
+};
+
+int GetSortingValue(int value) 
+{
+    int result =0,rest= value;
+    while (rest != 0) 
+        { 
+          result += rest%10;
+          rest /= 10;
+        }
+    return result;
 };
 
 class MyMatrix
@@ -29,11 +41,11 @@ public:
     void SetElement(int, int, int);
     void SetElement(int, int, int *);
     int* GetElement(int, int);
-    
     void Print();
     void PrintElement(int, int);
     vector<int*>* GetRow(int);
     void CopyRow(int, vector<int*>*);
+    void CopyColumn(int, vector<int*>*);
     vector<int*>* GetColumn(int);
 
     bool ValidIndex(int, int);
@@ -106,7 +118,7 @@ int* MyMatrix::GetElement(int i, int j)
 
 void MyMatrix::PrintElement(int i, int j)
 {
-    cout << *GetElement(i,j);
+    cout <<setw(10)<< *GetElement(i,j)<<"(" << setw(3)<<GetSortingValue(*GetElement(i, j) )<<")";
 };
 
 
@@ -129,6 +141,24 @@ vector<int*>* MyMatrix::GetRow(int ipar)
 };
 
 
+
+vector<int*>* MyMatrix::GetColumn(int jpar)
+{
+    if (jpar > 0 && jpar <= columns)
+    {
+        vector<int*>* result = new vector<int*>{};
+        for (int i = 1; i <= NumRows(); i++)
+        {
+            int* ptr = (int*)malloc(sizeof(int));
+            *ptr = *GetElement(jpar, i);
+
+            result->push_back(ptr);
+        }
+        return result;
+    }
+    else { cout << "Ошибка получения колонки " << jpar << "\n"; return nullptr; }
+};
+
 void MyMatrix::CopyRow(int ipar, vector<int*> *V)
 {   
     cout << "копирование строки "<<ipar<<"\n";
@@ -142,37 +172,37 @@ void MyMatrix::CopyRow(int ipar, vector<int*> *V)
     }
 };
 
-
-vector<int*>* MyMatrix::GetColumn(int jpar)
+void MyMatrix::CopyColumn(int ipar, vector<int*>* V)
 {
-    if (jpar > 0 && jpar <= columns)
+    cout << "копирование колонки " << ipar << "\n";
+    print_vector(V);
+    int j = 0;
+    for (int* i : *V)
     {
-        vector<int*>* result = new vector<int*>{};
-        for (int i = 1; i <= NumRows(); i++)
-        {
-            result->push_back(GetElement(i, jpar));
-        }
-        return result;
+        SetElement(j+1, ipar, i);
+        //SetElement(ipar, j + 1, j);
+        j++;
     }
-    else { cout << "Ошибка получения колонки " << jpar << "\n"; return nullptr; }
 };
+
+
+
 
 
 void MyMatrix::Print()
 {
-    cout << "\n\t ";
+    cout << "\n  ";
     for (int j = 1; j <= NumColumns(); j++)
     {
-        cout << j << "\t ";
+        cout << setw(15)<<right<<j;
     }
     cout << "\n";
     for (int i = 1; i <= NumRows(); i++)
     {
-        cout << i << "\t ";
+        cout <<setw(2)<< i;
         for (int j = 1; j <= NumColumns(); j++)
         {
             PrintElement(i, j);
-            cout << "\t";
         }
         cout << "\n";
     }
@@ -239,7 +269,7 @@ void BubbleSort::sort(vector<int*>*V)
         int* PCurrentValue = (*V)[i]; //текущией элемент
         int* PNextValue = (*V)[i + 1];//следующий элемент
         comparisions++;
-        if (*PCurrentValue > *PNextValue)
+        if (GetSortingValue(*PCurrentValue) > GetSortingValue(*PNextValue))
         {
             replacements++;
             int* temp = PNextValue;
@@ -271,7 +301,7 @@ void SelectionSort::sort(vector<int*>* V)
         {
             int* PCurrentValue = (*V)[i]; //текущией элемент
             comparisions++;
-            if (*PCurrentValue <  *PMinValue)
+            if (GetSortingValue(*PCurrentValue) < GetSortingValue(*PMinValue))
                 {
                 PMinValue = PCurrentValue;
                 MinIndex = i;
@@ -300,7 +330,7 @@ void InsertionSort::sort(vector<int*>* V)
 {
     for (int i = 1; i < elements; i++)
         {
-        for (int j = i; j > 0 && *((*V)[j - 1]) > *((*V)[j]); j--) // пока j>0 и элемент j-1 > j, x-массив int
+        for (int j = i; j > 0 && GetSortingValue(*((*V)[j - 1])) > GetSortingValue(*((*V)[j])); j--) // пока j>0 и элемент j-1 > j, x-массив int
             {
                 swap((*V)[j - 1], (*V)[j]);
                 replacements++;
@@ -327,7 +357,7 @@ void ShellSort::sort(vector<int*>* V)
             for (j = i; j >= step; j -= step)
             {
                 comparisions++;
-                if (*tmp < *((*V)[j-step]))
+                if (GetSortingValue(*tmp) < GetSortingValue(*((*V)[j-step])))
                     (*V)[j] = (*V)[j - step];
                 else
                     break;
@@ -358,7 +388,7 @@ void QuickSort::QSort(vector<int*>* V, int left, int right)
         for (int i = left; i < right; i++)
             {
             comparisions++;
-            if (*((*V)[i]) <= x) 
+            if (GetSortingValue(*((*V)[i])) <= GetSortingValue(x))
                 {
                 swap((*V)[i], (*V)[m++]);
                 replacements++;
@@ -394,27 +424,29 @@ int main()
     vector<int*>* row5 = Mcopy.GetRow(5);
 
     
+    vector<int*>* column2 = Mcopy.GetColumn(2);
+    vector<int*>* column4 = Mcopy.GetColumn(4);
+    vector<int*>* column6 = Mcopy.GetColumn(4);
+    vector<int*>* column8 = Mcopy.GetColumn(5);
+
 
     BubbleSort*S1=new BubbleSort();
     SelectionSort* S2 = new SelectionSort();
     InsertionSort* S3 = new InsertionSort();
     ShellSort* S4 = new ShellSort();
     QuickSort* S5 = new QuickSort();
-    S1->run(row1);
-    Mcopy.CopyRow(1, row1);
-    S2->run(row2);
-    //Mcopy.CopyRow(2, row2);
-    S3->run(row3);
-    //Mcopy.CopyRow(3, row3);
-    S4->run(row4);
-    //Mcopy.CopyRow(4, row4);
-    S5->run(row5);
-    //Mcopy.CopyRow(5, row5);
+    S1->run(column2);
+    Mcopy.CopyColumn(2, column2);
+    S2->run(column4);
+    Mcopy.CopyColumn(4, column4);
+    
     cout << "\nСортированная матрица\n";
     Mcopy.Print();
 
     cout << "\nИсходная матрица\n";
     M.Print();
+
+    cout << "\nGetSortingValue(1131230)"<< GetSortingValue(1131230) <<"\n";
 
     cout << "\nРабота завершена\n";
 }
@@ -429,3 +461,4 @@ int main()
 //   4. В окне "Список ошибок" можно просматривать ошибки.
 //   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
 //   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
+    

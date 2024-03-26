@@ -19,7 +19,7 @@ int GetSortingValue(int value)
 
 void print_vector(vector<int*>* V)
 {
-    for (int* i : *V) { cout << *i << " ("<<GetSortingValue(*i)<<")"; }
+    for (int* i : *V) { cout << *i << "("<<GetSortingValue(*i)<<") "; }
     cout << "\n";
 };
 

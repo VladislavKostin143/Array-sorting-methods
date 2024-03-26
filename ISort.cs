@@ -19,22 +19,22 @@
 
 
 
-void ISort::print() { cout << "Элементов " << elements << ", время " << duration << " наносекунд, сравнений " << comparisions << ", замен " << replacements << "\n"; };
+void ISort::print() { cout <<setw(30)<< title << " время " << setw(10) << duration << " наносекунд, сравнений " << setw(4) << comparisions << ", замен " << setw(4) << replacements << "\n"; };
 void ISort::clear() { elements = 0; duration = 0; comparisions = 0; replacements = 0; };
 void ISort::run(vector<int*> * V)
 {
-    clear();
+    
     elements = V->size();
-    cout << "\n" << title << "\n";
-    cout << "Исходный вектор:\n";
-    print_vector(V);
+    //cout << "\n" << title << "\n";
+    //cout << "Исходный вектор:\n";
+    //print_vector(V);
     auto start = std::chrono::system_clock::now();
     sort(V);
     auto end = std::chrono::system_clock::now();
     duration = (int)chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
-    cout << "Сотрированный вектор:\n";
-    print_vector(V);
-    print();
+    //cout << "Сотрированный вектор:\n";
+    //print_vector(V);
+    
 
 };
 
@@ -163,28 +163,31 @@ void sort(vector<int*>*);
 void QSort(vector<int*>*, int, int);
 };
 
-void QuickSort::QSort(vector<int*> * V, int left, int right)
+void QuickSort::QSort(vector<int*> * V, int start, int end)
     {
-    if (right <= left)
-        return;
-    int ipi = left + (right - left) / 2;
-    swap((*V)[ipi], (*V)[right]);
-    replacements++;
-    int x = *((*V)[right]);
-    int m = left;
-    for (int i = left; i < right; i++)
+    
+    if (start >= end)  { return;}
+
+    int current= start;
+    for (int i= start + 1; i <= end; i++)
     {
+        // если i-ый элемент меньше начального
         comparisions++;
-        if (GetSortingValue(*((*V)[i])) <= GetSortingValue(x))
+        if (GetSortingValue(*((*V)[i])) < GetSortingValue(*((*V)[start])))
         {
-            swap((*V)[i], (*V)[m++]);
+            swap((*V)[++current], (*V)[i]); // меняем его с левым
             replacements++;
         }
     }
-    swap((*V)[m], (*V)[right]);
-    QSort(V, left, m);
-    QSort(V, m + 1, right);
-}
+    swap((*V)[start], (*V)[current]); // Меняем выбранный (start) и последний обмененный элементы
+    replacements++;
+
+    if (current > start) { QSort(V, start, current - 1); } // Сортируем элементы слева
+    
+    if (end > current + 1) { QSort(V, current + 1, end); }// Сортируем элементы справа
+    
+
+};
 
 
 void QuickSort::sort(vector<int*> * V)

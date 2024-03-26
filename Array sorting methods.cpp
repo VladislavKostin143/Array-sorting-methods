@@ -446,7 +446,7 @@ int main()
     cout << "\nИсходная матрица\n";
     M.Print();
 
-    cout << "\nGetSortingValue(1131230)"<< GetSortingValue(1131230) <<"\n";
+  
 
     cout << "\nРабота завершена\n";
 }

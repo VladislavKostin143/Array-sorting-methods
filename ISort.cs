@@ -19,7 +19,7 @@
 
 
 
-void ISort::print() { cout <<setw(30)<< title << " время " << setw(10) << duration << " наносекунд, сравнений " << setw(4) << comparisions << ", замен " << setw(4) << replacements << "\n"; };
+void ISort::print() { cout <<setw(30)<< title << " " << setw(10) << duration << " наносекунд, сравнений " << setw(8) << comparisions << ", замен " << setw(8) << replacements << "\n"; };
 void ISort::clear() { elements = 0; duration = 0; comparisions = 0; replacements = 0; };
 void ISort::run(vector<int*> * V)
 {
@@ -48,24 +48,20 @@ void sort(vector<int*>*);
 
 void BubbleSort::sort(vector<int*> * V)
 {
-    unsigned iterations = elements - 1;
-    while (iterations > 0)
-    {
-        for (unsigned i = 0; i < iterations; i++)
+
+    for (int i = 0; i < elements; i++) 
         {
-            int* PCurrentValue = (*V)[i]; //текущией элемент
-            int* PNextValue = (*V)[i + 1];//следующий элемент
-            comparisions++;
-            if (GetSortingValue(*PCurrentValue) > GetSortingValue(*PNextValue))
-            {
-                replacements++;
-                int* temp = PNextValue;
-                (*V)[i + 1] = PCurrentValue;
-                (*V)[i] = temp;
-            }
+        bool swapped = false;
+            for (int j = 0; j < elements - 1 - i; j++)
+                { comparisions++;
+                if (GetSortingValue(*((*V)[j])) < GetSortingValue(*((*V)[j + 1])))
+                    { swapped = true;
+                        swap((*V)[j], (*V)[j+1]);
+                        replacements++;
+                    }
+                }
+        if (!swapped) break;
         }
-        iterations--;
-    }
 };
 
 
@@ -88,7 +84,7 @@ void SelectionSort::sort(vector<int*> * V)
         {
             int* PCurrentValue = (*V)[i]; //текущией элемент
             comparisions++;
-            if (GetSortingValue(*PCurrentValue) < GetSortingValue(*PMinValue))
+            if (GetSortingValue(*PCurrentValue) > GetSortingValue(*PMinValue))
             {
                 PMinValue = PCurrentValue;
                 MinIndex = i;
@@ -117,7 +113,7 @@ void InsertionSort::sort(vector<int*> * V)
 {
     for (int i = 1; i < elements; i++)
     {
-        for (int j = i; j > 0 && GetSortingValue(*((*V)[j - 1])) > GetSortingValue(*((*V)[j])); j--) // пока j>0 и элемент j-1 > j, x-массив int
+        for (int j = i; j > 0 && GetSortingValue(*((*V)[j - 1])) < GetSortingValue(*((*V)[j])); j--) // пока j>0 и элемент j-1 > j, x-массив int
         {
             swap((*V)[j - 1], (*V)[j]);
             replacements++;
@@ -144,7 +140,7 @@ void ShellSort::sort(vector<int*> * V)
             for (j = i; j >= step; j -= step)
             {
                 comparisions++;
-                if (GetSortingValue(*tmp) < GetSortingValue(*((*V)[j - step])))
+                if (GetSortingValue(*tmp) > GetSortingValue(*((*V)[j - step])))
                     (*V)[j] = (*V)[j - step];
                 else
                     break;
@@ -173,7 +169,7 @@ void QuickSort::QSort(vector<int*> * V, int start, int end)
     {
         // если i-ый элемент меньше начального
         comparisions++;
-        if (GetSortingValue(*((*V)[i])) < GetSortingValue(*((*V)[start])))
+        if (GetSortingValue(*((*V)[i])) > GetSortingValue(*((*V)[start])))
         {
             swap((*V)[++current], (*V)[i]); // меняем его с левым
             replacements++;

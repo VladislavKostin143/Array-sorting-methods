@@ -3,6 +3,9 @@
 #include <ctime>
 #include <chrono>
 #include <iomanip>
+#include <windows.h>
+
+
 
 using namespace std;
 
@@ -149,7 +152,7 @@ vector<int*>* MyMatrix::GetColumn(int jpar)
         for (int i = 1; i <= NumRows(); i++)
         {
             int* ptr = (int*)malloc(sizeof(int));
-            *ptr = *GetElement(jpar, i);
+            *ptr = *GetElement(i,jpar);
 
             result->push_back(ptr);
         }
@@ -186,7 +189,11 @@ void MyMatrix::CopyColumn(int ipar, vector<int*> * V)
 
 void MyMatrix::Print()
 {
-    cout << "\n  ";
+    HANDLE hnd = GetStdHandle(STD_OUTPUT_HANDLE);//консоль
+    SetConsoleTextAttribute(hnd, 0x9E);//фон голубой,цвет шрифта желтый
+      
+
+    cout << "\n    ";
     for (int j = 1; j <= NumColumns(); j++)
     {
         cout << setw(15) << right << j;
@@ -194,7 +201,9 @@ void MyMatrix::Print()
     cout << "\n";
     for (int i = 1; i <= NumRows(); i++)
     {
-        cout << setw(2) << i;
+        SetConsoleTextAttribute(hnd, 0x9E);//фон голубой,цвет шрифта желтый
+        cout << setw(4) << i;
+        SetConsoleTextAttribute(hnd, 0x07);//старый
         for (int j = 1; j <= NumColumns(); j++)
         {
             PrintElement(i, j);

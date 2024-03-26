@@ -10,7 +10,7 @@ int main()
 {
     setlocale(LC_ALL, "RU");
     cout << "____________________________________\n";
-    MyMatrix M(10, 8);
+    MyMatrix M(25, 7);
     M.RandomFill();
     MyMatrix Mcopy(&M);
     cout << "\nИсходная матрица\n";
@@ -23,17 +23,19 @@ int main()
     Methods.push_back(new BubbleSort());
     Methods.push_back(new SelectionSort());
     Methods.push_back(new InsertionSort());
-    Methods.push_back(new QuickSort());
     Methods.push_back(new ShellSort());
+    Methods.push_back(new QuickSort());
+    
 
 
-    cout << "\nСортировки \n\n";
+
+    cout << "\nСортировки   \n\n";
     for (ISort* method : Methods)
     {
         method->clear();//обнуление счетчиков
-        for (int j = 2; j <= Mcopy.NumColumns(); j += 2)
+        for (int j = 2; j <= M.NumColumns(); j += 2)
         {
-            vector<int*>* column = Mcopy.GetColumn(j);
+            vector<int*>* column = M.GetColumn(j);
             method->run(column);
             Mcopy.CopyColumn(j, column);
         }

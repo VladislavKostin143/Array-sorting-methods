@@ -198,6 +198,8 @@ void MyMatrix::Print()
     {
         cout << setw(15) << right << j;
     }
+    SetConsoleTextAttribute(hnd, 0x07);//старый
+    cout << " ";
     cout << "\n";
     for (int i = 1; i <= NumRows(); i++)
     {

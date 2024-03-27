@@ -2,7 +2,7 @@
 {
     public:
 
-    ISort() { title = "не задан"; duration = 0; comparisions = 0; replacements = 0; };
+    ISort() { title = "не задан"; duration = 0; comparisions = 0; replacements = 0; elements = 0; };
     ~ISort() = default;
     virtual void sort(vector<int*>*) { };
     void run(vector<int*>*);

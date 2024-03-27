@@ -29,7 +29,7 @@ int main()
 
 
 
-    cout << "\nСортировки   \n\n";
+    
     for (ISort* method : Methods)
     {
         method->clear();//обнуление счетчиков
@@ -39,7 +39,6 @@ int main()
             method->run(column);
             Mcopy.CopyColumn(j, column);
         }
-        method->print();//вывод счетчиков
     }
 
 
@@ -47,6 +46,8 @@ int main()
     cout << "\nСортированная матрица\n";
     Mcopy.Print();
 
+    cout << "\nСортировки   \n\n";
+    for (ISort* method : Methods) method->print();//вывод счетчиков    
   
 
     cout << "\nРабота завершена\n";

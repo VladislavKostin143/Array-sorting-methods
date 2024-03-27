@@ -19,7 +19,7 @@
 
 
 
-void ISort::print() { cout <<setw(30)<< title << " " << setw(10) << duration << " наносекунд, сравнений " << setw(8) << comparisions << ", замен " << setw(8) << replacements << "\n"; };
+void ISort::print() { cout <<left<<setw(30)<< title << " " <<right<< setw(10) << duration << " наносекунд, сравнений " << setw(8) << comparisions << ", замен " << setw(8) << replacements << "\n"; };
 void ISort::clear() { elements = 0; duration = 0; comparisions = 0; replacements = 0; };
 void ISort::run(vector<int*> * V)
 {
